@@ -1,23 +1,23 @@
 //
-//  ___COMPONENT_NAME___ConfigurationSnapshotTests.swift
-//  Spark___COMPONENT_NAME___Tests
+//  DividerConfigurationSnapshotTests.swift
+//  SparkDividerTests
 //
-//  Created by ___USERNAME___ on ___CURRENT_DATE___.
-//  Copyright © ___CURRENT_YEAR___ Adevinta. All rights reserved.
+//  Created by louis.borlee on 17/07/2024.
+//  Copyright © 2024 Adevinta. All rights reserved.
 //
 
 import UIKit
-@testable import Spark___COMPONENT_NAME___
+@testable import SparkDivider
 @_spi(SI_SPI) @testable import SparkCommon
 @_spi(SI_SPI) @testable import SparkCommonSnapshotTesting
 
-struct ___COMPONENT_NAME___ConfigurationSnapshotTests {
+struct DividerConfigurationSnapshotTests {
 
     // MARK: - Properties
 
-    let scenario: ___COMPONENT_NAME___ScenarioSnapshotTests
+    let scenario: DividerScenarioSnapshotTests
 
-    let intent: ___COMPONENT_NAME___Intent
+    let intent: DividerIntent
     let modes: [ComponentSnapshotTestMode]
     let sizes: [UIContentSizeCategory]
 
