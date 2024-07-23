@@ -66,6 +66,8 @@ public final class DividerUIView: UIView {
         }
     }
 
+    public let label = UILabel()
+
     // MARK: - Private vars
     @ScaledUIMetric private var scaleFactor: CGFloat = 1.0
     private var scaledHeight: CGFloat {
@@ -81,7 +83,6 @@ public final class DividerUIView: UIView {
         ]
     )
     private let firstSeparatorContainer = UIView()
-    public let label = UILabel()
     private let secondSeparatorContainer = UIView()
 
     private let viewModel: DividerViewModel
