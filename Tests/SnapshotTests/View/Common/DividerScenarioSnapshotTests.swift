@@ -1,18 +1,18 @@
 //
-//  ___COMPONENT_NAME___ScenarioSnapshotTestsTests.swift
-//  Spark___COMPONENT_NAME___SnapshotTests
+//  DividerScenarioSnapshotTestsTests.swift
+//  SparkDividerSnapshotTests
 //
-//  Created by ___USERNAME___ on ___CURRENT_DATE___.
-//  Copyright © ___CURRENT_YEAR___ Adevinta. All rights reserved.
+//  Created by louis.borlee on 17/07/2024.
+//  Copyright © 2024 Adevinta. All rights reserved.
 //
 
-@testable import Spark___COMPONENT_NAME___
+@testable import SparkDivider
 @_spi(SI_SPI) @testable import SparkCommonTesting
 @_spi(SI_SPI) @testable import SparkCommonSnapshotTesting
 import UIKit
 import SwiftUI
 
-enum ___COMPONENT_NAME___ScenarioSnapshotTests: String, CaseIterable {
+enum DividerScenarioSnapshotTests: String, CaseIterable {
     case test1
 
     // MARK: - Type Alias
@@ -21,7 +21,7 @@ enum ___COMPONENT_NAME___ScenarioSnapshotTests: String, CaseIterable {
 
     // MARK: - Configurations
 
-    func configuration(isSwiftUIComponent: Bool) -> [___COMPONENT_NAME___ConfigurationSnapshotTests] {
+    func configuration(isSwiftUIComponent: Bool) -> [DividerConfigurationSnapshotTests] {
         switch self {
         case .test1:
             return self.test1(isSwiftUIComponent: isSwiftUIComponent)
@@ -36,8 +36,8 @@ enum ___COMPONENT_NAME___ScenarioSnapshotTests: String, CaseIterable {
     ///
     /// Content:
     ///  - TODO:
-    private func test1(isSwiftUIComponent: Bool) -> [___COMPONENT_NAME___ConfigurationSnapshotTests] {
-        let intents = ___COMPONENT_NAME___Intent.allCases
+    private func test1(isSwiftUIComponent: Bool) -> [DividerConfigurationSnapshotTests] {
+        let intents = DividerIntent.allCases
 
         return intents.map {
             .init(
