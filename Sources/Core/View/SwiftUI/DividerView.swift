@@ -65,6 +65,7 @@ public struct DividerView: View {
         text
             .foregroundColor(viewModel.textColor.color)
             .font(viewModel.textFont.font)
+            .layoutPriority(2)
     }
 
     // MARK: - Horizontal

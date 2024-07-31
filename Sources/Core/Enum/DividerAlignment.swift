@@ -7,7 +7,7 @@
 //
 
 /// The alignment of the divider.
-public enum DividerAlignment {
+public enum DividerAlignment: CaseIterable {
     case top
     case leading
     case center
