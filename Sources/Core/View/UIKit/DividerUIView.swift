@@ -11,7 +11,7 @@ import Combine
 import SparkTheming
 @_spi(SI_SPI) import SparkCommon
 
-/// The UIKit version for the divider.
+/// The UIKit version of the divider.
 public final class DividerUIView: UIView {
 
     // MARK: - Public vars

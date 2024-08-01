@@ -11,6 +11,7 @@ import Combine
 import SparkTheming
 @_spi(SI_SPI) import SparkCommon
 
+/// The SwiftUI version of the divider.
 public struct DividerView: View {
 
     @ObservedObject private var viewModel: DividerViewModel
@@ -25,6 +26,12 @@ public struct DividerView: View {
         return DividerConstants.height * self.scaleFactor
     }
 
+    /// Initialize a new divider view without text.
+    /// - Parameters:
+    ///   - theme: The spark theme of the divider.
+    ///   - intent: The intent of the divider.
+    ///   - axis: The axis of the divider. The default is ``.horizontal``.
+    ///   - alignment: The alignment of the divider. The default is ``.center``.
     public init(
         theme: Theme,
         intent: DividerIntent,
@@ -38,6 +45,13 @@ public struct DividerView: View {
         self.text = nil
     }
 
+    /// Initialize a new divider view with a text.
+    /// - Parameters:
+    ///   - theme: The spark theme of the divider.
+    ///   - intent: The intent of the divider.
+    ///   - axis: The axis of the divider. The default is ``.horizontal``.
+    ///   - alignment: The alignment of the divider. The default is ``.center``.
+    ///   - text: Text to show inbetween separators. Its `.foregroudColor` and `.font` will be overriden by Spark.
     public init(
         theme: Theme,
         intent: DividerIntent,

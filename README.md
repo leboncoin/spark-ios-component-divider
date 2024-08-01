@@ -1,61 +1,114 @@
 
 # Divider
 
-TODO: 
-
 ## Specifications
 
-The divider specifications on Zeroheight is [here](TODO:).
+The divider specifications on Zeroheight is [here](https://zeroheight.com/1186e1705/v/latest/p/867b47-divider).
 
 ![Figma anatomy](https://github.com/adevinta/spark-ios-component-divider/blob/main/.github/assets/anatomy.png)
 
-## Usage
-
-Divider is available both in UIKit and SwiftUI.
-
-### UIKit
-
-### Usage
-
-#### Subviews
-
-* `TODO`: TODO.
-
-#### Properties
-
-* `TODO`: TODO.
-
-#### Published Properties
-
-* `TODO`: TODO.
-
-#### Initialization
+## UIKit
 
 ```swift
-let divider = DividerUIView(
-    TODO: TODO
-)
+/// The UIKit version of the divider.
+public final class DividerUIView: UIView {
+
+    /// Initialize a new divider view.
+    /// - Parameters:
+    ///   - theme: The spark theme of the divider.
+    ///   - intent: The intent of the divider.
+    public init(
+        theme: Theme,
+        intent: DividerIntent
+    )
+}
 ```
 
-#### Getter / Setter
+To set a label, use the `label` property and set `showLabel` to `true`
+```
+    divider.label.text = "Your text"
+    divider.showLabel = true
+```
 
-TODO
-
+Note:
+- The label text color is already set by Spark
+- The label text font is already set by Spark
 
 ### SwiftUI
 
-#### Initialization
-
 ```swift
-let divider = DividerView(
-    TODO: TODO
-)
+/// The SwiftUI version of the divider.
+public struct DividerView: View {
+
+    /// Initialize a new divider view without text.
+    /// - Parameters:
+    ///   - theme: The spark theme of the divider.
+    ///   - intent: The intent of the divider.
+    ///   - axis: The axis of the divider. The default is ``.horizontal``.
+    ///   - alignment: The alignment of the divider. The default is ``.center``.
+    public init(
+        theme: Theme,
+        intent: DividerIntent,
+        axis: DividerAxis = .horizontal,
+        alignment: DividerAlignment = .center
+    )
+
+    /// Initialize a new divider view with a text.
+    /// - Parameters:
+    ///   - theme: The spark theme of the divider.
+    ///   - intent: The intent of the divider.
+    ///   - axis: The axis of the divider. The default is ``.horizontal``.
+    ///   - alignment: The alignment of the divider. The default is ``.center``.
+    ///   - text: Text to show inbetween separators. Its `.foregroudColor` and `.font` will be overriden by Spark.
+    public init(
+        theme: Theme,
+        intent: DividerIntent,
+        axis: DividerAxis,
+        alignment: DividerAlignment,
+        text: Text
+    )
+}
 ```
 
-#### Modifier
+## Properties
 
-TODO
+### Intent
 
+```swift
+/// The intent of the divider.
+public enum DividerIntent: CaseIterable {
+    case outline
+    case outlineHigh
+}
+```
+
+### Axis
+
+```swift
+/// The axis of the divider.
+public enum DividerAxis: CaseIterable {
+    case horizontal
+    case vertical
+}
+````
+
+### Alignment
+
+```swift
+/// The alignment of the divider.
+public enum DividerAlignment: CaseIterable {
+    case top
+    case leading
+    case center
+    case trailing
+    case bottom
+}
+```
+
+Note: 
+- `.top` and `.bottom` are only used with the `.vertical` axis.  
+- `.leading` and `.trailing` are only used with the `.horizontal` axis.  
+- It will act as `.center` if otherwise.  
 
 ## License
 
