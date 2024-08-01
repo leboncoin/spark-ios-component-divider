@@ -11,6 +11,7 @@ import Combine
 import SparkTheming
 @_spi(SI_SPI) import SparkCommon
 
+/// The SwiftUI version of the divider.
 public struct DividerView: View {
 
     @ObservedObject private var viewModel: DividerViewModel
@@ -18,13 +19,19 @@ public struct DividerView: View {
     private let axis: DividerAxis
     private let alignment: DividerAlignment
 
-    private let text: Text?
+    private let text: (() -> Text)?
 
     @ScaledMetric var scaleFactor = 1.0
     private var scaledHeight: CGFloat {
         return DividerConstants.height * self.scaleFactor
     }
 
+    /// Initialize a new divider view without text.
+    /// - Parameters:
+    ///   - theme: The spark theme of the divider.
+    ///   - intent: The intent of the divider.
+    ///   - axis: The axis of the divider. The default is ``.horizontal``.
+    ///   - alignment: The alignment of the divider. The default is ``.center``.
     public init(
         theme: Theme,
         intent: DividerIntent,
@@ -38,12 +45,19 @@ public struct DividerView: View {
         self.text = nil
     }
 
+    /// Initialize a new divider view with a text.
+    /// - Parameters:
+    ///   - theme: The spark theme of the divider.
+    ///   - intent: The intent of the divider.
+    ///   - axis: The axis of the divider. The default is ``.horizontal``.
+    ///   - alignment: The alignment of the divider. The default is ``.center``.
+    ///   - text: Text to show inbetween separators. Its `.foregroudColor` and `.font` will be overriden by Spark.
     public init(
         theme: Theme,
         intent: DividerIntent,
         axis: DividerAxis,
         alignment: DividerAlignment,
-        text: Text
+        text: @escaping () -> Text
     ) {
         let viewModel = DividerViewModel(theme: theme, intent: intent)
         self.viewModel = viewModel
@@ -61,30 +75,32 @@ public struct DividerView: View {
     }
 
     @ViewBuilder
-    private func styledText() -> some View {
+    private func styledText(_ text: Text) -> some View {
         text
             .foregroundColor(viewModel.textColor.color)
             .font(viewModel.textFont.font)
             .layoutPriority(2)
-    }
+            .accessibilityIdentifier(DividerAccessibilityIdentifier.view)
+}
 
     // MARK: - Horizontal
     @ViewBuilder
     private func horizontalDivider() -> some View {
-        HStack(spacing: viewModel.spacing) {
-            let firstSeparator = horizontalSeparator()
-
-            if text != nil {
+        let firstSeparator = horizontalSeparator()
+        if let text = text?() {
+            HStack(spacing: viewModel.spacing) {
                 firstSeparator
                     .frame(maxWidth: alignment == .leading ? DividerConstants.minimumWidth : .infinity)
 
-                styledText()
+                styledText(text)
 
                 horizontalSeparator()
                     .frame(maxWidth: alignment == .trailing ? DividerConstants.minimumWidth : .infinity)
-            } else {
-                firstSeparator
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier(DividerAccessibilityIdentifier.view)
+        } else {
+            firstSeparator
         }
     }
 
@@ -98,20 +114,21 @@ public struct DividerView: View {
     // MARK: - Vertical
     @ViewBuilder
     private func verticalDivider() -> some View {
-        VStack(spacing: viewModel.spacing) {
-            let firstSeparator = verticalSeparator()
-
-            if let text {
+        let firstSeparator = verticalSeparator()
+        if let text = text?() {
+            VStack(spacing: viewModel.spacing) {
                 firstSeparator
                     .frame(maxHeight: alignment == .top ? DividerConstants.minimumWidth : .infinity)
 
-                styledText()
+                styledText(text)
 
                 verticalSeparator()
                     .frame(maxHeight: alignment == .bottom ? DividerConstants.minimumWidth : .infinity)
-            } else {
-                firstSeparator
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier(DividerAccessibilityIdentifier.view)
+        } else {
+            firstSeparator
         }
     }
 
