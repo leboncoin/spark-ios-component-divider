@@ -65,7 +65,7 @@ public struct DividerView: View {
         intent: DividerIntent,
         axis: DividerAxis,
         alignment: DividerAlignment,
-        text: Text
+        text: @escaping () -> Text
     )
 }
 ```

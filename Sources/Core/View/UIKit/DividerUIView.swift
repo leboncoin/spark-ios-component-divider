@@ -57,12 +57,24 @@ public final class DividerUIView: UIView {
             guard self.showLabel != oldValue else { return }
             self.setSeparators()
             if self.showLabel {
+                self.accessibilityTraits.insert(.staticText)
+                self.isAccessibilityElement = true
                 self.label.isHidden = false
                 self.secondSeparatorContainer.isHidden = false
             } else {
+                self.accessibilityTraits.remove(.staticText)
+                self.isAccessibilityElement = false
                 self.label.isHidden = true
                 self.secondSeparatorContainer.isHidden = true
             }
+        }
+    }
+
+    public override var accessibilityLabel: String? {
+        get {
+            return self.label.accessibilityLabel
+        } set {
+            self.label.accessibilityLabel = newValue
         }
     }
 
@@ -113,6 +125,7 @@ public final class DividerUIView: UIView {
 
         self.label.textColor = self.viewModel.textColor.uiColor
         self.label.font = self.viewModel.textFont.uiFont
+        self.label.adjustsFontForContentSizeCategory = true
         self.label.textAlignment = .center
 
         self.label.isHidden = true
