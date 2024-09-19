@@ -24,25 +24,67 @@ final class DividerViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
 
     // MARK: - Tests
 
-//    func test() {
-//        let scenarios = DividerScenarioSnapshotTests.allCases
-//
-//        for scenario in scenarios {
-//            let configurations = scenario.configuration(isSwiftUIComponent: true)
-//            for configuration in configurations {
-//                let view = DividerView(
-//                    theme: self.theme,
-//                    intent: configuration.intent
-//                )
-//                    .fixedSize()
-//
-//                self.assertSnapshot(
-//                    matching: view,
-//                    modes: configuration.modes,
-//                    sizes: configuration.sizes,
-//                    testName: configuration.testName()
-//                )
-//            }
-//        }
-//    }
+    func test1() {
+        self._test(.test1)
+    }
+
+    func test2() {
+        self._test(.test2)
+    }
+
+    func test3() {
+        self._test(.test3)
+    }
+
+    private func _test(_ scenario: DividerScenario) {
+        for configuration in scenario.configurations {
+            let view: DividerView
+            if let textSize = configuration.textSize {
+                view = DividerView(
+                    theme: self.theme,
+                    intent: configuration.intent,
+                    axis: configuration.axis,
+                    alignment: configuration.alignment,
+                    text: {
+                        Text(textSize.text)
+                    }
+                )
+            } else {
+                view = DividerView(
+                    theme: self.theme,
+                    intent: configuration.intent,
+                    axis: configuration.axis,
+                    alignment: configuration.alignment
+                )
+            }
+
+            self.assertSnapshot(
+                matching: self.viewWithFrame(
+                    view,
+                    axis: configuration.axis
+                )
+                .multilineTextAlignment(.center)
+                .lineLimit(configuration.textSize == .longMultiline ? nil : 1)
+                .padding(.all, 12)
+                .background(self.theme.colors.base.background.color)
+                .fixedSize(),
+                modes: configuration.modes,
+                sizes: configuration.sizes,
+                testName: configuration.testName
+            )
+        }
+    }
+
+    @ViewBuilder
+    private func viewWithFrame(_ view: some View, axis: DividerAxis) -> some View {
+        switch axis {
+        case .horizontal:
+                view
+            .frame(width: 300)
+        case .vertical:
+                view
+            .frame(maxWidth: 200)
+            .frame(height: 300)
+        }
+    }
 }

@@ -55,8 +55,8 @@ public struct DividerView: View {
     public init(
         theme: Theme,
         intent: DividerIntent,
-        axis: DividerAxis,
-        alignment: DividerAlignment,
+        axis: DividerAxis = .horizontal,
+        alignment: DividerAlignment = .center,
         text: @escaping () -> Text
     ) {
         let viewModel = DividerViewModel(theme: theme, intent: intent)
@@ -81,7 +81,7 @@ public struct DividerView: View {
             .font(viewModel.textFont.font)
             .layoutPriority(2)
             .accessibilityIdentifier(DividerAccessibilityIdentifier.view)
-}
+    }
 
     // MARK: - Horizontal
     @ViewBuilder

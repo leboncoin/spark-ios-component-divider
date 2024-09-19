@@ -119,7 +119,7 @@ public final class DividerUIView: UIView {
     // MARK: - Layout
     private func setupView() {
         self.accessibilityIdentifier = DividerAccessibilityIdentifier.view
-
+        self.stackView.alignment = .center
         self.stackView.spacing = self.viewModel.spacing
         self.addSubview(self.stackView)
 
@@ -231,7 +231,6 @@ public final class DividerUIView: UIView {
 
     private func addHorizontalSeparator(in containerView: UIView) -> UIView {
         let separator = self.createSeparator()
-
         containerView.addSubview(separator)
 
         let widthConstraint: NSLayoutConstraint
@@ -246,11 +245,11 @@ public final class DividerUIView: UIView {
         NSLayoutConstraint.activate([
             separator.heightAnchor.constraint(equalToConstant: self.scaledHeight),
             separator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            separator.topAnchor.constraint(equalTo: containerView.topAnchor),
             separator.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             separator.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             widthConstraint
         ])
-
         return separator
     }
 
@@ -270,11 +269,11 @@ public final class DividerUIView: UIView {
         NSLayoutConstraint.activate([
             separator.widthAnchor.constraint(equalToConstant: self.scaledHeight),
             separator.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            separator.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             separator.topAnchor.constraint(equalTo: containerView.topAnchor),
             separator.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             heightConstraint
         ])
-
         return separator
     }
 

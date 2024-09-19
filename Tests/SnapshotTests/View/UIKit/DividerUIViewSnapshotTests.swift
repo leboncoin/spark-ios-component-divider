@@ -17,32 +17,62 @@ import XCTest
 
 final class DividerUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
 
-    // MARK: - Properties
-
     private let theme: Theme = SparkTheme.shared
 
-    // MARK: - Tests
+    func test1() {
+        self._test(.test1)
+    }
 
-//    func test() {
-//        let scenarios = DividerScenarioSnapshotTests.allCases
-//
-//        for scenario in scenarios {
-//            let configurations = scenario.configuration(isSwiftUIComponent: false)
-//            for configuration in configurations {
-//
-//                let view = DividerUIView(
-//                    theme: self.theme,
-//                    intent: configuration.intent
-//                )
-//                view.translatesAutoresizingMaskIntoConstraints = false
-//
-//                self.assertSnapshot(
-//                    matching: view,
-//                    modes: configuration.modes,
-//                    sizes: configuration.sizes,
-//                    testName: configuration.testName()
-//                )
-//            }
-//        }
-//    }
+    func test2() {
+        self._test(.test2)
+    }
+
+    func test3() {
+        self._test(.test3)
+    }
+
+    private func _test(_ scenario: DividerScenario) {
+        for configuration in scenario.configurations {
+            let view = DividerUIView(
+                theme: self.theme,
+                intent: configuration.intent
+            )
+            view.translatesAutoresizingMaskIntoConstraints = false
+
+            view.alignment = configuration.alignment
+            view.axis = configuration.axis
+
+            if let textSize = configuration.textSize {
+                view.showLabel = true
+                view.label.text = textSize.text
+                view.label.numberOfLines = textSize == .longMultiline ? 0 : 1
+            }
+
+            let containerView = UIView()
+            containerView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.backgroundColor = self.theme.colors.base.background.uiColor
+            containerView.addSubview(view)
+            NSLayoutConstraint.activate([
+                view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+                view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
+                view.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                view.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+            ])
+
+            if view.axis == .vertical {
+                view.heightAnchor.constraint(equalToConstant: 300).isActive = true
+                view.widthAnchor.constraint(lessThanOrEqualToConstant: 200).isActive = true
+            } else {
+                view.widthAnchor.constraint(equalToConstant: 300).isActive = true
+            }
+
+            self.assertSnapshot(
+                matching: containerView,
+                modes: configuration.modes,
+                sizes: configuration.sizes,
+                testName: configuration.testName
+            )
+        }
+
+    }
 }
