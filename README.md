@@ -1,121 +1,75 @@
-
 # Divider
+
+**Spark** is the [Leboncoin](https://www.leboncoin.fr/)'s _Design System_.
+
+The repository here contains only the **iOS Divider** for _SwiftUI_ and _UIKit_.
+
+You can also see all of our Spark iOS repositories on [Github](https://github.com/orgs/leboncoin/repositories?q=spark-ios+sort%3Aname-asc).
 
 ## Specifications
 
 The divider specifications on Zeroheight is [here](https://zeroheight.com/1186e1705/v/latest/p/867b47-divider).
 
-![Figma anatomy](https://github.com/adevinta/spark-ios-component-divider/blob/main/.github/assets/anatomy.png)
+![Figma anatomy](https://github.com/leboncoin/spark-ios-component-divider/blob/main/.github/assets/anatomy.png)
 
-## UIKit
+## Technical Documentation
 
-```swift
-/// The UIKit version of the divider.
-public final class DividerUIView: UIView {
+You are a developer ? A technical documentation in _DocC_ is available [here](https://leboncoin.github.io/spark-ios-component-divider/).
 
-    /// Initialize a new divider view.
-    /// - Parameters:
-    ///   - theme: The spark theme of the divider.
-    ///   - intent: The intent of the divider.
-    public init(
-        theme: Theme,
-        intent: DividerIntent
-    )
-}
-```
+### Swift Package Manager
 
-To set a label, use the `label` property and set `showLabel` to `true`
-```
-    divider.label.text = "Your text"
-    divider.showLabel = true
-```
+_Note: Instructions below are for using **SPM** without the Xcode UI. It's the easiest to go to your Project Settings -> Swift Packages and add SparkDivider from there._
 
-Note:
-- The label text color is already set by Spark
-- The label text font is already set by Spark
-
-### SwiftUI
+To integrate using Apple's Swift package manager, without Xcode integration, add the following as a dependency to your `Package.swift`:
 
 ```swift
-/// The SwiftUI version of the divider.
-public struct DividerView: View {
-
-    /// Initialize a new divider view without text.
-    /// - Parameters:
-    ///   - theme: The spark theme of the divider.
-    ///   - intent: The intent of the divider.
-    ///   - axis: The axis of the divider. The default is ``.horizontal``.
-    ///   - alignment: The alignment of the divider. The default is ``.center``.
-    public init(
-        theme: Theme,
-        intent: DividerIntent,
-        axis: DividerAxis = .horizontal,
-        alignment: DividerAlignment = .center
-    )
-
-    /// Initialize a new divider view with a text.
-    /// - Parameters:
-    ///   - theme: The spark theme of the divider.
-    ///   - intent: The intent of the divider.
-    ///   - axis: The axis of the divider. The default is ``.horizontal``.
-    ///   - alignment: The alignment of the divider. The default is ``.center``.
-    ///   - text: Text to show inbetween separators. Its `.foregroudColor` and `.font` will be overriden by Spark.
-    public init(
-        theme: Theme,
-        intent: DividerIntent,
-        axis: DividerAxis,
-        alignment: DividerAlignment,
-        text: @escaping () -> Text
-    )
-}
+.package(url: "https://github.com/leboncoin/spark-ios-component-divider.git", .upToNextMajor(from: "1.0.0"))
 ```
 
-## Properties
+and then specify `SparkDivider` as a dependency of the Target in which you wish to use the SparkDivider.
 
-### Intent
+Here's an example `Package.swift`:
 
 ```swift
-/// The intent of the divider.
-public enum DividerIntent: CaseIterable {
-    case outline
-    case outlineHigh
-}
+// swift-tools-version:5.9
+import PackageDescription
+
+let package = Package(
+    name: "MyPackage",
+    platforms: [
+        .iOS(.v16)
+    ],
+    products: [
+        .library(
+            name: "MyPackage",
+            targets: ["MyPackage"]),
+    ],
+    dependencies: [
+        .package(
+            url: "https://github.com/leboncoin/spark-ios-component-divider.git",
+            .upToNextMajor(from: "1.0.0")
+        )
+    ],
+    targets: [
+        .target(
+            name: "MyPackage",
+            dependencies: [
+                .product(
+                    name: "SparkDivider",
+                    package: "spark-ios-component-divider"
+                ),
+            ]
+        )
+    ]
+)
 ```
-
-### Axis
-
-```swift
-/// The axis of the divider.
-public enum DividerAxis: CaseIterable {
-    case horizontal
-    case vertical
-}
-````
-
-### Alignment
-
-```swift
-/// The alignment of the divider.
-public enum DividerAlignment: CaseIterable {
-    case top
-    case leading
-    case center
-    case trailing
-    case bottom
-}
-```
-
-Note: 
-- `.top` and `.bottom` are only used with the `.vertical` axis.  
-- `.leading` and `.trailing` are only used with the `.horizontal` axis.  
-- It will act as `.center` if otherwise.  
 
 ## License
 
 ```
 MIT License
 
-Copyright (c) 2024 Adevinta
+Copyright (c) 2024 Leboncoin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
