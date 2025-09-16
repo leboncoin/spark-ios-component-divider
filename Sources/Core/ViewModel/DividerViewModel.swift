@@ -1,6 +1,6 @@
 //
 //  DividerViewModel.swift
-//  SparkDivider
+//  SparkComponentDivider
 //
 //  Created by louis.borlee on 17/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.
@@ -11,7 +11,7 @@ import SparkTheming
 
 final class DividerViewModel: ObservableObject {
 
-    var theme: Theme {
+    var theme: any Theme {
         didSet {
             self.textFont = self.theme.typography.body1
             let colors = self.getColorsUseCase.execute(
@@ -42,7 +42,7 @@ final class DividerViewModel: ObservableObject {
     @Published var spacing: CGFloat
 
     init(
-        theme: Theme,
+        theme: any Theme,
         intent: DividerIntent,
         getColorsUseCase: any DividierGetColorsUseCasable = DividerGetColorsUseCase()
     ) {

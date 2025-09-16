@@ -1,6 +1,6 @@
 //
 //  DividerViewModelTests.swift
-//  SparkDividerTests
+//  SparkComponentDividerTests
 //
 //  Created by louis.borlee on 17/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.
@@ -10,11 +10,11 @@ import XCTest
 import Combine
 import SparkTheming
 
-@_spi(SI_SPI) import SparkDividerTesting
+@_spi(SI_SPI) import SparkComponentDividerTesting
 @_spi(SI_SPI) import SparkCommonTesting
 @_spi(SI_SPI) import SparkThemingTesting
 
-@testable import SparkDivider
+@testable import SparkComponentDivider
 
 final class DividerViewModelTests: XCTestCase {
 

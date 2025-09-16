@@ -1,6 +1,6 @@
 //
 //  DividerAccessibilityIdentifier.swift
-//  SparkDivider
+//  SparkComponentDivider
 //
 //  Created by louis.borlee on 17/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.

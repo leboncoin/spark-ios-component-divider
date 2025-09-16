@@ -1,6 +1,6 @@
 //
 //  DividierGetColorsUseCasableGeneratedMock+ExtensionTests.swift
-//  SparkDividerTests
+//  SparkComponentDividerTests
 //
 //  Created by louis.borlee on 18/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.
@@ -8,7 +8,7 @@
 
 import SparkTheming
 @testable @_spi(SI_SPI) import SparkThemingTesting
-@testable import SparkDivider
+@testable import SparkComponentDivider
 
 public extension DividierGetColorsUseCasableGeneratedMock {
     static func mocked(

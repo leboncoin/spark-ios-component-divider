@@ -1,13 +1,13 @@
 //
 //  DividerConfigurationSnapshotTests.swift
-//  SparkDividerTests
+//  SparkComponentDividerTests
 //
 //  Created by louis.borlee on 17/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.
 //
 
 import UIKit
-@testable import SparkDivider
+@testable import SparkComponentDivider
 @_spi(SI_SPI) @testable import SparkCommon
 @_spi(SI_SPI) @testable import SparkCommonSnapshotTesting
 
@@ -46,6 +46,7 @@ enum DividerScenario: String {
     case test1
     case test2
     case test3
+    case test4
 
     var configurations: [DividerScenarioConfiguration] {
         switch self {
@@ -55,6 +56,8 @@ enum DividerScenario: String {
             return self.createTest2Configurations()
         case .test3:
             return self.createTest3Configurations()
+        case .test4:
+            return self.createTest4Configurations()
         }
     }
 
@@ -114,6 +117,24 @@ enum DividerScenario: String {
                     textSize: .longSingleLine,
                     modes: [.light],
                     sizes: [.accessibilityExtraExtraLarge]
+                )
+            )
+        }
+        return configurations
+    }
+
+    private func createTest4Configurations() -> [DividerScenarioConfiguration] {
+        var configurations = [DividerScenarioConfiguration]()
+        for intent in DividerIntent.allCases {
+            configurations.append(
+                .init(
+                    description: "test4",
+                    intent: intent,
+                    alignment: .center,
+                    axis: .horizontal,
+                    textSize: .longSingleLine,
+                    modes: [.light],
+                    sizes: [.accessibilityMedium]
                 )
             )
         }
