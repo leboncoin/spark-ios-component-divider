@@ -1,6 +1,6 @@
 //
 //  DividerUIViewSnapshotTests.swift
-//  SparkDividerTests
+//  SparkComponentDividerTests
 //
 //  Created by louis.borlee on 17/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.
@@ -13,11 +13,11 @@ import XCTest
 @_spi(SI_SPI) @testable import SparkCommonTesting
 @_spi(SI_SPI) @testable import SparkCommonSnapshotTesting
 
-@testable import SparkDivider
+@testable import SparkComponentDivider
 
 final class DividerUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
 
-    private let theme: Theme = SparkTheme.shared
+    private let theme: any Theme = SparkTheme.shared
 
     func test1() {
         self._test(.test1)
@@ -29,6 +29,10 @@ final class DividerUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
 
     func test3() {
         self._test(.test3)
+    }
+
+    func test4() {
+        self._test(.test4)
     }
 
     private func _test(_ scenario: DividerScenario) {

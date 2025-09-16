@@ -1,6 +1,6 @@
 //
 //  DividerViewModel.swift
-//  SparkDivider
+//  SparkComponentDivider
 //
 //  Created by louis.borlee on 17/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.
@@ -12,21 +12,32 @@ import SparkTheming
 // sourcery: AutoMockable
 protocol DividierGetColorsUseCasable {
     func execute(
-        colors: Colors,
+        colors: any Colors,
         intent: DividerIntent
     ) -> DividerColors
 }
 
 struct DividerGetColorsUseCase: DividierGetColorsUseCasable {
-    func execute(colors: any SparkTheming.Colors, intent: DividerIntent) -> DividerColors {
-        let textColor = colors.base.onSurface
-        let separatorColor: any ColorToken
-        switch intent {
-        case .outline:
-            separatorColor = colors.base.outline
-        case .outlineHigh:
-            separatorColor = colors.base.outlineHigh
+    func execute(colors: any Colors, intent: DividerIntent) -> DividerColors {
+        let separatorColor = switch intent {
+        case .outline: colors.base.outline
+        case .outlineHigh: colors.base.outlineHigh
+        case .accent: colors.accent.onAccentContainer
+        case .basic: colors.basic.onBasicContainer
+        case .success: colors.feedback.onSuccessContainer
+        case .alert: colors.feedback.onAlertContainer
+        case .error: colors.feedback.onErrorContainer
+        case .info: colors.feedback.onInfoContainer
+        case .neutral: colors.feedback.onNeutralContainer
+        case .main: colors.main.onMainContainer
+        case .support: colors.support.onSupportContainer
         }
+
+        let textColor = switch intent {
+        case .outline, .outlineHigh: colors.base.onSurface
+        default: separatorColor
+        }
+
         return .init(
             text: textColor,
             separator: separatorColor

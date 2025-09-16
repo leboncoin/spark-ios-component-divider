@@ -5,18 +5,18 @@ import PackageDescription
 
 // swiftlint:disable all
 let package = Package(
-    name: "SparkDivider",
+    name: "SparkComponentDivider",
     platforms: [
         .iOS(.v16)
     ],
     products: [
         .library(
-            name: "SparkDivider",
-            targets: ["SparkDivider"]
+            name: "SparkComponentDivider",
+            targets: ["SparkComponentDivider"]
         ),
         .library(
-            name: "SparkDividerTesting",
-            targets: ["SparkDividerTesting"]
+            name: "SparkComponentDividerTesting",
+            targets: ["SparkComponentDividerTesting"]
         )
     ],
     dependencies: [
@@ -33,7 +33,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "SparkDivider",
+            name: "SparkComponentDivider",
             dependencies: [
                 .product(
                     name: "SparkCommon",
@@ -47,9 +47,9 @@ let package = Package(
             path: "Sources/Core"
         ),
         .target(
-            name: "SparkDividerTesting",
+            name: "SparkComponentDividerTesting",
             dependencies: [
-                "SparkDivider",
+                "SparkComponentDivider",
                 .product(
                     name: "SparkCommon",
                     package: "spark-ios-common"
@@ -70,10 +70,10 @@ let package = Package(
             path: "Sources/Testing"
         ),
         .testTarget(
-            name: "SparkDividerUnitTests",
+            name: "SparkComponentDividerUnitTests",
             dependencies: [
-                "SparkDivider",
-                "SparkDividerTesting",
+                "SparkComponentDivider",
+                "SparkComponentDividerTesting",
                 .product(
                     name: "SparkCommonTesting",
                     package: "spark-ios-common"
@@ -86,10 +86,10 @@ let package = Package(
             path: "Tests/UnitTests"
         ),
         .testTarget(
-            name: "SparkDividerSnapshotTests",
+            name: "SparkComponentDividerSnapshotTests",
             dependencies: [
-                "SparkDivider",
-                "SparkDividerTesting",
+                "SparkComponentDivider",
+                "SparkComponentDividerTesting",
                 .product(
                     name: "SparkCommonSnapshotTesting",
                     package: "spark-ios-common"

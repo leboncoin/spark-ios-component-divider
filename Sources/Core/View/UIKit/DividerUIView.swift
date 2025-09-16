@@ -1,6 +1,6 @@
 //
 //  DividerUIView.swift
-//  SparkDivider
+//  SparkComponentDivider
 //
 //  Created by louis.borlee on 17/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.
@@ -16,7 +16,7 @@ public final class DividerUIView: UIView {
 
     // MARK: - Public vars
     /// The spark theme of the divider.
-    public var theme: Theme {
+    public var theme: any Theme {
         get {
             return self.viewModel.theme
         }
@@ -104,7 +104,7 @@ public final class DividerUIView: UIView {
     ///   - theme: The spark theme of the divider.
     ///   - intent: The intent of the divider.
     public init(
-        theme: Theme,
+        theme: any Theme,
         intent: DividerIntent
     ) {
         self.viewModel = .init(theme: theme, intent: intent)

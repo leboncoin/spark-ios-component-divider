@@ -1,6 +1,6 @@
 //
 //  DividerView.swift
-//  SparkDivider
+//  SparkComponentDivider
 //
 //  Created by louis.borlee on 17/07/2024.
 //  Copyright © 2024 Leboncoin. All rights reserved.
@@ -33,7 +33,7 @@ public struct DividerView: View {
     ///   - axis: The axis of the divider. The default is ``.horizontal``.
     ///   - alignment: The alignment of the divider. The default is ``.center``.
     public init(
-        theme: Theme,
+        theme: any Theme,
         intent: DividerIntent,
         axis: DividerAxis = .horizontal,
         alignment: DividerAlignment = .center
@@ -53,7 +53,7 @@ public struct DividerView: View {
     ///   - alignment: The alignment of the divider. The default is ``.center``.
     ///   - text: Text to show inbetween separators. Its `.foregroudColor` and `.font` will be overriden by Spark.
     public init(
-        theme: Theme,
+        theme: any Theme,
         intent: DividerIntent,
         axis: DividerAxis = .horizontal,
         alignment: DividerAlignment = .center,
