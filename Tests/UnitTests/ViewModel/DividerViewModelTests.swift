@@ -1,223 +1,456 @@
 //
 //  DividerViewModelTests.swift
-//  SparkComponentDividerTests
+//  SparkComponentDividerUnitTests
 //
-//  Created by louis.borlee on 17/07/2024.
-//  Copyright © 2024 Leboncoin. All rights reserved.
+//  Created by robin.lemaire on 14/11/2025.
+//  Copyright © 2025 Leboncoin. All rights reserved.
 //
 
 import XCTest
-import Combine
+import SwiftUI
 import SparkTheming
 
-@_spi(SI_SPI) import SparkComponentDividerTesting
-@_spi(SI_SPI) import SparkCommonTesting
-@_spi(SI_SPI) import SparkThemingTesting
-
 @testable import SparkComponentDivider
+@_spi(SI_SPI) @testable import SparkComponentDividerTesting
+@_spi(SI_SPI) import SparkTheming
+@_spi(SI_SPI) import SparkThemingTesting
 
 final class DividerViewModelTests: XCTestCase {
 
-    var publishers: DividerPublishers!
+    // MARK: - Initialization
 
-    override func setUp() {
-        super.setUp()
-        self.publishers = nil
-    }
+    func test_initialization_shouldUseDefaultValues() {
+        // GIVEN / WHEN
+        let stub = Stub()
+        let viewModel = stub.viewModel
 
-    func setupPublishers(viewModel: DividerViewModel) {
-        self.publishers = .init(
-            textColor: PublisherMock(publisher: viewModel.$textColor),
-            separatorColor: PublisherMock(publisher: viewModel.$separatorColor),
-            spacing: PublisherMock(publisher: viewModel.$spacing),
-            textFont: PublisherMock(publisher: viewModel.$textFont)
+        // THEN
+        XCTAssertEqual(viewModel.colors, DividerColors(), "Wrong colors value")
+        XCTAssertEqual(viewModel.separatorWidthTypes, DividerSeparatorWidthTypes(), "Wrong separator widths value")
+        XCTAssertEqual(viewModel.spacing, 0, "Wrong spacing value")
+        XCTAssertTrue(viewModel.textFont is TypographyFontTokenClear, "Wrong textFont value")
+
+        XCTAssertNotCalled(
+            on: stub,
+            getColorsUseCase: true,
+            getSeparatorWidthTypesUseCase: true,
+            getSpacingUseCase: true,
+            getTextFontUseCase: true
         )
-        self.publishers.load()
     }
 
-    func test_init() throws {
+    // MARK: - Setup
+
+    func test_setup_shouldCallAllUseCases() {
         // GIVEN
-        let theme = ThemeGeneratedMock.mocked()
-        let intent = DividerIntent.outlineHigh
-        let useCase = DividierGetColorsUseCasableGeneratedMock.mocked()
+        let stub = Stub()
+        let viewModel = stub.viewModel
 
         // WHEN
-        let viewModel = DividerViewModel(
-            theme: theme,
-            intent: intent,
-            getColorsUseCase: useCase
+        viewModel.setup(stub: stub)
+
+        // THEN
+        XCTAssertEqualToExpected(on: stub)
+
+        DividerGetColorsUseCaseableMockTest.XCTAssert(
+            stub.getColorsUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenTheme: stub.givenTheme,
+            givenIntent: stub.givenIntent,
+            expectedReturnValue: stub.expectedColors
         )
-        self.setupPublishers(viewModel: viewModel)
 
-        // THEN - Variables
-        XCTAssertIdentical(viewModel.theme as? ThemeGeneratedMock, theme, "Wrong theme")
-        XCTAssertEqual(viewModel.intent, intent, "Wrong intent")
-        XCTAssertEqual(viewModel.spacing, theme.layout.spacing.large, "Wrong spacing")
-        XCTAssertIdentical(viewModel.textFont as? TypographyFontTokenGeneratedMock, theme.typography.body1 as? TypographyFontTokenGeneratedMock, "Wrong textFont")
-        XCTAssertTrue(viewModel.textColor.equals(ColorTokenGeneratedMock.blue()), "Wrong textColor")
-        XCTAssertTrue(viewModel.separatorColor.equals(ColorTokenGeneratedMock.red()), "Wrong separatorColor")
+        DividerGetSeparatorWidthTypesUseCaseableMockTest.XCTAssert(
+            stub.getSeparatorWidthTypesUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenAlignment: stub.givenAlignment,
+            givenAxis: stub.givenAxis,
+            expectedReturnValue: stub.expectedSeparatorWidthTypes
+        )
 
-        // THEN - UseCase
-        XCTAssertEqual(useCase.executeWithColorsAndIntentCallsCount, 1, "executeWithColorsAndIntentCalls should have been called once")
-        let receivedArguments = try XCTUnwrap(useCase.executeWithColorsAndIntentReceivedArguments, "Couldn't unwrap receivedArguments")
-        XCTAssertEqual(receivedArguments.intent, intent, "Wrong received intent")
-        XCTAssertIdentical(receivedArguments.colors as? ColorsGeneratedMock, theme.colors as? ColorsGeneratedMock, "Wrong received colors")
+        DividerGetSpacingUseCaseableMockTest.XCTAssert(
+            stub.getSpacingUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenTheme: stub.givenTheme,
+            expectedReturnValue: stub.expectedSpacing
+        )
 
-        // THEN - Publishers
-        XCTAssertEqual(self.publishers.textColor.sinkCount, 1, "$textColor should have been called once")
-        XCTAssertEqual(self.publishers.separatorColor.sinkCount, 1, "$separatorColor should have been called once")
-        XCTAssertEqual(self.publishers.textFont.sinkCount, 1, "$textFont should have been called once")
-        XCTAssertEqual(self.publishers.spacing.sinkCount, 1, "$spacing should have been called once")
+        DividerGetTextFontUseCaseableMockTest.XCTAssert(
+            stub.getTextFontUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenTheme: stub.givenTheme,
+            expectedReturnValue: stub.expectedTextFont
+        )
     }
 
-    func test_didSet_theme() throws {
+    // MARK: - Property Changes
+
+    func test_themeChanged_shouldUpdateDependentProperties() {
         // GIVEN
-        let theme = ThemeGeneratedMock.mocked()
-        let intent = DividerIntent.outlineHigh
-        let useCase = DividierGetColorsUseCasableGeneratedMock.mocked()
-        let viewModel = DividerViewModel(
-            theme: theme,
-            intent: intent,
-            getColorsUseCase: useCase
-        )
+        let stub = Stub()
+        let viewModel = stub.viewModel
+
+        viewModel.setup(stub: stub)
+        stub.resetMockedData()
 
         let newTheme = ThemeGeneratedMock.mocked()
-        self.setupPublishers(viewModel: viewModel)
-
-        let spacing = LayoutSpacingGeneratedMock.mocked()
-        spacing.large = -99
-        let layout = LayoutGeneratedMock.mocked()
-        layout.spacing = spacing
-        newTheme.layout = layout
-
-        self.publishers.reset()
-        useCase.reset()
 
         // WHEN
         viewModel.theme = newTheme
 
-        // THEN - Variables
-        XCTAssertIdentical(viewModel.theme as? ThemeGeneratedMock, newTheme, "Wrong theme")
-        XCTAssertEqual(viewModel.spacing, -99, "Wrong spacing")
-        XCTAssertIdentical(viewModel.textFont as? TypographyFontTokenGeneratedMock, newTheme.typography.body1 as? TypographyFontTokenGeneratedMock, "Wrong textFont")
+        // THEN
+        XCTAssertEqualToExpected(on: stub)
 
-        // THEN - UseCase
-        XCTAssertEqual(useCase.executeWithColorsAndIntentCallsCount, 1, "executeWithColorsAndIntent should have been called once")
-        let receivedArguments = try XCTUnwrap(useCase.executeWithColorsAndIntentReceivedArguments, "Couldn't unwrap receivedArguments")
-        XCTAssertEqual(receivedArguments.intent, intent, "Wrong received intent")
-        XCTAssertIdentical(receivedArguments.colors as? ColorsGeneratedMock, newTheme.colors as? ColorsGeneratedMock, "Wrong received colors")
+        DividerGetColorsUseCaseableMockTest.XCTAssert(
+            stub.getColorsUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenTheme: newTheme,
+            givenIntent: stub.givenIntent,
+            expectedReturnValue: stub.expectedColors
+        )
 
-        // THEN - Publishers
-        XCTAssertEqual(self.publishers.textColor.sinkCount, 1, "$textColor should have been called once")
-        XCTAssertEqual(self.publishers.separatorColor.sinkCount, 1, "$separatorColor should have been called once")
-        XCTAssertEqual(self.publishers.textFont.sinkCount, 1, "$textFont should have been called once")
-        XCTAssertEqual(self.publishers.spacing.sinkCount, 1, "$spacing should have been called once")
+        DividerGetSpacingUseCaseableMockTest.XCTAssert(
+            stub.getSpacingUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenTheme: newTheme,
+            expectedReturnValue: stub.expectedSpacing
+        )
+
+        DividerGetTextFontUseCaseableMockTest.XCTAssert(
+            stub.getTextFontUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenTheme: newTheme,
+            expectedReturnValue: stub.expectedTextFont
+        )
+
+        XCTAssertNotCalled(
+            on: stub,
+            getSeparatorWidthTypesUseCase: true
+        )
     }
 
-    func test_didSet_intent() throws {
+    func test_alignmentChanged_shouldUpdateSeparatorWidthTypesOnly() {
         // GIVEN
-        let theme = ThemeGeneratedMock.mocked()
-        let intent = DividerIntent.outlineHigh
-        let useCase = DividierGetColorsUseCasableGeneratedMock.mocked()
-        let viewModel = DividerViewModel(
-            theme: theme,
-            intent: intent,
-            getColorsUseCase: useCase
-        )
-        self.setupPublishers(viewModel: viewModel)
+        let stub = Stub()
+        let viewModel = stub.viewModel
 
-        self.publishers.reset()
-        useCase.reset()
+        viewModel.setup(stub: stub)
+        stub.resetMockedData()
+
+        let newAlignment: DividerAlignment = .leading
 
         // WHEN
-        viewModel.intent = .outline
+        viewModel.alignment = newAlignment
 
-        // THEN - UseCase
-        XCTAssertEqual(useCase.executeWithColorsAndIntentCallsCount, 1, "executeWithColorsAndIntent should have been called once")
-        let receivedArguments = try XCTUnwrap(useCase.executeWithColorsAndIntentReceivedArguments, "Couldn't unwrap receivedArguments")
-        XCTAssertEqual(receivedArguments.intent, .outline, "Wrong received intent")
-        XCTAssertIdentical(receivedArguments.colors as? ColorsGeneratedMock, theme.colors as? ColorsGeneratedMock, "Wrong received colors")
+        // THEN
+        XCTAssertEqualToExpected(on: stub)
 
-        // THEN - Publishers
-        XCTAssertEqual(self.publishers.textColor.sinkCount, 1, "$textColor should have been called once")
-        XCTAssertEqual(self.publishers.separatorColor.sinkCount, 1, "$separatorColor should have been called once")
-        XCTAssertFalse(self.publishers.textFont.sinkCalled, "$textFont should not have been called")
-        XCTAssertFalse(self.publishers.spacing.sinkCalled, "$spacing should not have been called")
+        DividerGetSeparatorWidthTypesUseCaseableMockTest.XCTAssert(
+            stub.getSeparatorWidthTypesUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenAlignment: newAlignment,
+            givenAxis: stub.givenAxis,
+            expectedReturnValue: stub.expectedSeparatorWidthTypes
+        )
+
+        XCTAssertNotCalled(
+            on: stub,
+            getColorsUseCase: true,
+            getSpacingUseCase: true,
+            getTextFontUseCase: true
+        )
     }
 
-    func test_didSet_intent_equal() throws {
+    func test_axisChanged_shouldUpdateSeparatorWidthTypesOnly() {
         // GIVEN
-        let theme = ThemeGeneratedMock.mocked()
-        let intent = DividerIntent.outlineHigh
-        let useCase = DividierGetColorsUseCasableGeneratedMock.mocked()
-        let viewModel = DividerViewModel(
-            theme: theme,
-            intent: intent,
-            getColorsUseCase: useCase
-        )
-        self.setupPublishers(viewModel: viewModel)
+        let stub = Stub()
+        let viewModel = stub.viewModel
 
-        self.publishers.reset()
-        useCase.reset()
+        viewModel.setup(stub: stub)
+        stub.resetMockedData()
+
+        let newAxis: DividerAxis = .vertical
 
         // WHEN
-        viewModel.intent = intent
+        viewModel.axis = newAxis
 
-        // THEN - UseCase
-        XCTAssertFalse(
-            useCase.executeWithColorsAndIntentCalled,
-            "executeWithColorsAndIntent should not be called when new intent is equal to the previous one"
+        // THEN
+        XCTAssertEqualToExpected(on: stub)
+
+        DividerGetSeparatorWidthTypesUseCaseableMockTest.XCTAssert(
+            stub.getSeparatorWidthTypesUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenAlignment: stub.givenAlignment,
+            givenAxis: newAxis,
+            expectedReturnValue: stub.expectedSeparatorWidthTypes
         )
 
-        // THEN - Publishers
-        XCTAssertFalse(self.publishers.textColor.sinkCalled, "$textColor should not have been called")
-        XCTAssertFalse(self.publishers.separatorColor.sinkCalled, "$separatorColor should not have been called")
-        XCTAssertFalse(self.publishers.textFont.sinkCalled, "$textFont should not have been called")
-        XCTAssertFalse(self.publishers.spacing.sinkCalled, "$spacing should not have been called")
+        XCTAssertNotCalled(
+            on: stub,
+            getColorsUseCase: true,
+            getSpacingUseCase: true,
+            getTextFontUseCase: true
+        )
+    }
+
+    func test_intentChanged_shouldUpdateColorsOnly() {
+        // GIVEN
+        let stub = Stub()
+        let viewModel = stub.viewModel
+
+        viewModel.setup(stub: stub)
+        stub.resetMockedData()
+
+        let newIntent: DividerIntent = .outlineHigh
+
+        // WHEN
+        viewModel.intent = newIntent
+
+        // THEN
+        XCTAssertEqualToExpected(on: stub)
+
+        DividerGetColorsUseCaseableMockTest.XCTAssert(
+            stub.getColorsUseCaseMock,
+            expectedNumberOfCalls: 1,
+            givenTheme: stub.givenTheme,
+            givenIntent: newIntent,
+            expectedReturnValue: stub.expectedColors
+        )
+
+        XCTAssertNotCalled(
+            on: stub,
+            getSeparatorWidthTypesUseCase: true,
+            getSpacingUseCase: true,
+            getTextFontUseCase: true
+        )
+    }
+
+    func test_propertiesChanged_beforeSetup_shouldNotCallUseCases() {
+        // GIVEN
+        let stub = Stub()
+        let viewModel = stub.viewModel
+
+        // WHEN
+        viewModel.theme = ThemeGeneratedMock.mocked()
+        viewModel.axis = .vertical
+        viewModel.alignment = .leading
+        viewModel.intent = .outlineHigh
+
+        // THEN
+        XCTAssertEqualToExpected(
+            on: stub,
+            otherColors: DividerColors(),
+            otherSeparatorWidthTypes: DividerSeparatorWidthTypes(),
+            otherSpacing: 0,
+            otherTextFont: TypographyFontTokenClear()
+        )
+
+        XCTAssertNotCalled(
+            on: stub,
+            getColorsUseCase: true,
+            getSeparatorWidthTypesUseCase: true,
+            getSpacingUseCase: true,
+            getTextFontUseCase: true
+        )
+    }
+
+    func test_propertiesChanged_withoutValueChange_shouldNotCallUseCases() {
+        // GIVEN
+        let stub = Stub()
+        let viewModel = stub.viewModel
+
+        viewModel.setup(stub: stub)
+        stub.resetMockedData()
+
+        // WHEN
+        viewModel.theme = stub.givenTheme
+        viewModel.axis = stub.givenAxis
+        viewModel.alignment = stub.givenAlignment
+        viewModel.intent = stub.givenIntent
+
+        // THEN
+        XCTAssertEqualToExpected(on: stub)
+
+        XCTAssertNotCalled(
+            on: stub,
+            getColorsUseCase: true,
+            getSeparatorWidthTypesUseCase: true,
+            getSpacingUseCase: true,
+            getTextFontUseCase: true
+        )
+    }
+
+    func test_propertiesChanged_withNilValues_shouldNotCallUseCases() {
+        // GIVEN
+        let stub = Stub()
+        let viewModel = stub.viewModel
+
+        viewModel.setup(stub: stub)
+        stub.resetMockedData()
+
+        // WHEN
+        viewModel.theme = nil
+        viewModel.axis = nil
+        viewModel.alignment = nil
+        viewModel.intent = nil
+
+        // THEN
+        XCTAssertEqualToExpected(on: stub)
+
+        XCTAssertNotCalled(
+            on: stub,
+            getColorsUseCase: true,
+            getSeparatorWidthTypesUseCase: true,
+            getSpacingUseCase: true,
+            getTextFontUseCase: true
+        )
     }
 }
 
-final class DividerPublishers {
-    var cancellables = Set<AnyCancellable>()
+// MARK: - Stub
 
-    var textColor: PublisherMock<Published<any ColorToken>.Publisher>
-    var separatorColor: PublisherMock<Published<any ColorToken>.Publisher>
+private final class Stub {
 
-    var spacing: PublisherMock<Published<CGFloat>.Publisher>
+    // MARK: - Given
 
-    var textFont: PublisherMock<Published<any TypographyFontToken>.Publisher>
+    let givenTheme = ThemeGeneratedMock.mocked()
+    let givenAxis: DividerAxis = .horizontal
+    let givenAlignment: DividerAlignment = .center
+    let givenIntent: DividerIntent = .outline
 
-    init(
-        textColor: PublisherMock<Published<any ColorToken>.Publisher>,
-        separatorColor: PublisherMock<Published<any ColorToken>.Publisher>,
-        spacing: PublisherMock<Published<CGFloat>.Publisher>,
-        textFont: PublisherMock<Published<any TypographyFontToken>.Publisher>
-    ) {
-        self.textColor = textColor
-        self.separatorColor = separatorColor
-        self.spacing = spacing
-        self.textFont = textFont
+    // MARK: - Expected
+
+    let expectedColors = DividerColors(
+        text: ColorTokenGeneratedMock.blue(),
+        separator: ColorTokenGeneratedMock.red()
+    )
+    let expectedSeparatorWidthTypes = DividerSeparatorWidthTypes(
+        first: .fixed,
+        last: .dynamic
+    )
+    let expectedSpacing: CGFloat = 8
+    let expectedTextFont = TypographyFontTokenGeneratedMock.mocked(.title2)
+
+    // MARK: - Use Case Mocks
+
+    let getColorsUseCaseMock: DividerGetColorsUseCaseableGeneratedMock
+    let getSeparatorWidthTypesUseCaseMock: DividerGetSeparatorWidthTypesUseCaseableGeneratedMock
+    let getSpacingUseCaseMock: DividerGetSpacingUseCaseableGeneratedMock
+    let getTextFontUseCaseMock: DividerGetTextFontUseCaseableGeneratedMock
+
+    // MARK: - ViewModel
+
+    let viewModel: DividerViewModel
+
+    // MARK: - Initialization
+
+    init() {
+        let getColorsUseCaseMock = DividerGetColorsUseCaseableGeneratedMock()
+        getColorsUseCaseMock.executeWithThemeAndIntentReturnValue = self.expectedColors
+
+        let getSeparatorWidthTypesUseCaseMock = DividerGetSeparatorWidthTypesUseCaseableGeneratedMock()
+        getSeparatorWidthTypesUseCaseMock.executeWithAlignmentAndAxisReturnValue = self.expectedSeparatorWidthTypes
+
+        let getSpacingUseCaseMock = DividerGetSpacingUseCaseableGeneratedMock()
+        getSpacingUseCaseMock.executeWithThemeReturnValue = self.expectedSpacing
+
+        let getTextFontUseCaseMock = DividerGetTextFontUseCaseableGeneratedMock()
+        getTextFontUseCaseMock.executeWithThemeReturnValue = self.expectedTextFont
+
+        self.viewModel = DividerViewModel(
+            getColorsUseCase: getColorsUseCaseMock,
+            getSeparatorWidthTypesUseCase: getSeparatorWidthTypesUseCaseMock,
+            getSpacingUseCase: getSpacingUseCaseMock,
+            getTextFontUseCase: getTextFontUseCaseMock
+        )
+
+        self.getColorsUseCaseMock = getColorsUseCaseMock
+        self.getSeparatorWidthTypesUseCaseMock = getSeparatorWidthTypesUseCaseMock
+        self.getSpacingUseCaseMock = getSpacingUseCaseMock
+        self.getTextFontUseCaseMock = getTextFontUseCaseMock
     }
 
-    func load() {
-        self.cancellables = Set<AnyCancellable>()
+    // MARK: - Helpers
 
-        [self.textColor, self.separatorColor].forEach {
-            $0.loadTesting(on: &self.cancellables)
-        }
-
-        self.spacing.loadTesting(on: &self.cancellables)
-
-        self.textFont.loadTesting(on: &self.cancellables)
+    func resetMockedData() {
+        self.getColorsUseCaseMock.reset()
+        self.getSeparatorWidthTypesUseCaseMock.reset()
+        self.getSpacingUseCaseMock.reset()
+        self.getTextFontUseCaseMock.reset()
     }
+}
 
-    func reset() {
-        [self.textColor, self.separatorColor].forEach {
-            $0.reset()
-        }
+// MARK: - Helpers
 
-        self.spacing.reset()
+private extension DividerViewModel {
 
-        self.textFont.reset()
+    func setup(stub: Stub) {
+        self.setup(
+            theme: stub.givenTheme,
+            alignment: stub.givenAlignment,
+            axis: stub.givenAxis,
+            intent: stub.givenIntent
+        )
     }
+}
+
+private func XCTAssertNotCalled(
+    on stub: Stub,
+    getColorsUseCase: Bool = false,
+    getSeparatorWidthTypesUseCase: Bool = false,
+    getSpacingUseCase: Bool = false,
+    getTextFontUseCase: Bool = false
+) {
+    DividerGetColorsUseCaseableMockTest.XCTCalled(
+        stub.getColorsUseCaseMock,
+        executeWithThemeAndIntentCalled: !getColorsUseCase
+    )
+
+    DividerGetSeparatorWidthTypesUseCaseableMockTest.XCTCalled(
+        stub.getSeparatorWidthTypesUseCaseMock,
+        executeWithAlignmentAndAxisCalled: !getSeparatorWidthTypesUseCase
+    )
+
+    DividerGetSpacingUseCaseableMockTest.XCTCalled(
+        stub.getSpacingUseCaseMock,
+        executeWithThemeCalled: !getSpacingUseCase
+    )
+
+    DividerGetTextFontUseCaseableMockTest.XCTCalled(
+        stub.getTextFontUseCaseMock,
+        executeWithThemeCalled: !getTextFontUseCase
+    )
+}
+
+private func XCTAssertEqualToExpected(
+    on stub: Stub,
+    otherColors: DividerColors? = nil,
+    otherSeparatorWidthTypes: DividerSeparatorWidthTypes? = nil,
+    otherSpacing: CGFloat? = nil,
+    otherTextFont: (any TypographyFontToken)? = nil
+) {
+    let viewModel = stub.viewModel
+
+    XCTAssertEqual(
+        viewModel.colors,
+        otherColors ?? stub.expectedColors,
+        "Wrong colors value"
+    )
+
+    XCTAssertEqual(
+        viewModel.separatorWidthTypes,
+        otherSeparatorWidthTypes ?? stub.expectedSeparatorWidthTypes,
+        "Wrong separatorWidthTypes value"
+    )
+
+    XCTAssertEqual(
+        viewModel.spacing,
+        otherSpacing ?? stub.expectedSpacing,
+        "Wrong spacing value"
+    )
+
+    XCTAssertTrue(
+        viewModel.textFont.equals(otherTextFont ?? stub.expectedTextFont),
+        "Wrong textFont value"
+    )
 }

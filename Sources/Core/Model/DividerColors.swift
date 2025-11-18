@@ -2,14 +2,23 @@
 //  DividerColors.swift
 //  SparkComponentDivider
 //
-//  Created by louis.borlee on 17/07/2024.
-//  Copyright © 2024 Leboncoin. All rights reserved.
+//  Created by robin.lemaire on 12/10/2025.
+//  Copyright © 2025 Leboncoin. All rights reserved.
 //
 
-import Foundation
-import SparkTheming
+@_spi(SI_SPI) import SparkTheming
 
-struct DividerColors {
-    let text: any ColorToken
-    let separator: any ColorToken
+struct DividerColors: Equatable {
+
+    // MARK: - Properties
+
+    var text: any ColorToken = ColorTokenClear()
+    var separator: any ColorToken = ColorTokenClear()
+
+    // MARK: - Equatable
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.text.equals(rhs.text) &&
+        lhs.separator.equals(rhs.separator)
+    }
 }

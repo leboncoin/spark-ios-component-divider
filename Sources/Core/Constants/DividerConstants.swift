@@ -10,5 +10,5 @@ import Foundation
 
 enum DividerConstants {
     static let minimumWidth: CGFloat = 40
-    static let height: CGFloat = 1
+    static let thickness: CGFloat = 1
 }

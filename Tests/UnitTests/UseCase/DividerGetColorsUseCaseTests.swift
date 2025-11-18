@@ -2,12 +2,11 @@
 //  DividerGetColorsUseCaseTests.swift
 //  SparkComponentDividerTests
 //
-//  Created by louis.borlee on 17/07/2024.
-//  Copyright © 2024 Leboncoin. All rights reserved.
+//  Created by robin.lemaire on 12/11/2025.
+//  Copyright © 2025 Leboncoin. All rights reserved.
 //
 
 import XCTest
-import Combine
 import SparkTheming
 
 @_spi(SI_SPI) import SparkComponentDividerTesting
@@ -17,146 +16,257 @@ import SparkTheming
 
 final class DividerGetColorsUseCaseTests: XCTestCase {
 
+    // MARK: - Properties
+
+    private var theme: ThemeGeneratedMock!
+    private var useCase: DividerGetColorsUseCase!
+
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        self.theme = ThemeGeneratedMock.mocked()
+        self.useCase = DividerGetColorsUseCase()
+    }
+
+    override func tearDown() {
+        self.theme = nil
+        self.useCase = nil
+        super.tearDown()
+    }
+
+    // MARK: - Active Intent Tests
+
     func test_execute_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .outline
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .outline)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.base.onSurface), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.base.outline), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for outline intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should be outline for outline intent"
+        )
     }
 
     func test_execute_outlineHigh() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .outlineHigh
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .outlineHigh)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.base.onSurface), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.base.outlineHigh), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for outlineHigh intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outlineHigh),
+            "Separator color should be outlineHigh for outlineHigh intent"
+        )
     }
 
-    func test_execute_accent() {
+    // MARK: - Deprecated Intent Tests (Default Fallback)
+
+    func test_execute_deprecated_accent_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .accent
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .accent)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.accent.onAccentContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.accent.onAccentContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 
-    func test_execute_basic() {
+    func test_execute_deprecated_basic_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .basic
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .basic)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.basic.onBasicContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.basic.onBasicContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 
-    func test_execute_success() {
+    func test_execute_deprecated_success_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .success
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .success)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.feedback.onSuccessContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.feedback.onSuccessContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 
-    func test_execute_alert() {
+    func test_execute_deprecated_alert_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .alert
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .alert)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.feedback.onAlertContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.feedback.onAlertContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 
-    func test_execute_error() {
+    func test_execute_deprecated_error_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .error
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .error)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.feedback.onErrorContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.feedback.onErrorContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 
-    func test_execute_info() {
+    func test_execute_deprecated_info_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .info
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .info)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.feedback.onInfoContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.feedback.onInfoContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 
-    func test_execute_neutral() {
+    func test_execute_deprecated_neutral_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .neutral
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .neutral)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.feedback.onNeutralContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.feedback.onNeutralContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 
-    func test_execute_main() {
+    func test_execute_deprecated_main_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .main
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .main)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.main.onMainContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.main.onMainContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 
-    func test_execute_support() {
+    func test_execute_deprecated_support_fallsback_to_outline() {
         // GIVEN
-        let useCase = DividerGetColorsUseCase()
-        let colors = ColorsGeneratedMock.mocked()
+        let intent: DividerIntent = .support
 
         // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .support)
+        let dividerColors = self.useCase.execute(
+            theme: self.theme,
+            intent: intent
+        )
 
         // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.support.onSupportContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.support.onSupportContainer), "Wrong separator color")
+        XCTAssertTrue(
+            dividerColors.text.equals(theme.colors.base.onSurface),
+            "Text color should be onSurface for deprecated intent"
+        )
+        XCTAssertTrue(
+            dividerColors.separator.equals(theme.colors.base.outline),
+            "Separator color should fallback to outline for deprecated intent"
+        )
     }
 }
