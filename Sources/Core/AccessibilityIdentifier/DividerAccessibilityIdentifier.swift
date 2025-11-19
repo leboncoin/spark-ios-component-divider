@@ -12,4 +12,7 @@ public enum DividerAccessibilityIdentifier {
     // MARK: - Properties
 
     public static let view = "spark-divider"
+    public static let label = "spark-divider-label"
+    public static let firstSeparator = "spark-divider-first-separator"
+    public static let lastSeparator = "spark-divider-last-separator"
 }
