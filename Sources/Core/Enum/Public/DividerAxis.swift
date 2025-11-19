@@ -16,7 +16,7 @@ public enum DividerAxis: CaseIterable {
     // MARK: - Properties
 
     /// The default case. Equals to **.horizontal**.
-    static var `default`: Self = .horizontal
+    public static var `default`: Self = .horizontal
 
     var uikit: NSLayoutConstraint.Axis {
         switch self {

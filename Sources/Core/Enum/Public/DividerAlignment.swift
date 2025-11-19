@@ -17,5 +17,5 @@ public enum DividerAlignment: CaseIterable {
     // MARK: - Properties
 
     /// The default case. Equals to **.center**.
-    static var `default`: Self = .center
+    public static var `default`: Self = .center
 }

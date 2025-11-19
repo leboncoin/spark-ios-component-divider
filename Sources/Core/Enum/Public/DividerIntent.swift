@@ -39,5 +39,5 @@ public enum DividerIntent: CaseIterable {
     ]
 
     /// The default case. Equals to **.outline**.
-    static var `default`: Self = .outline
+    public static var `default`: Self = .outline
 }
