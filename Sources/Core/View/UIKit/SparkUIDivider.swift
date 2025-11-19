@@ -11,8 +11,6 @@ import SparkTheming
 @_spi(SI_SPI) import SparkCommon
 import Combine
 
-// TODO: Test custom a11y label
-
 /// The Divider component provides a thin, unobtrusive line that separates
 /// and distinguishes sections of content to reinforce visual hierarchy.
 ///

@@ -8,8 +8,6 @@
 
 import SwiftUI
 
-// TODO: A11Y
-
 /// The Divider component provides a thin, unobtrusive line that separates
 /// and distinguishes sections of content to reinforce visual hierarchy.
 ///
@@ -46,7 +44,7 @@ import SwiftUI
 /// If there is not text, the component is not accessible,
 /// in other case, the accessibilityLabel is equals to the content of the label.
 ///
-/// To override this value, you need to set a new **accessibilityLabel**
+/// To override this value, you need to set a new **accessibilityLabel**.
 ///
 /// ## Rendering
 ///
