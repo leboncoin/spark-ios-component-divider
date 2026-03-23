@@ -102,9 +102,9 @@ final class DividerGetColorsUseCaseTests: XCTestCase {
         )
     }
 
-    func test_execute_deprecated_basic_fallsback_to_outline() {
+    func test_execute_deprecated_support_fallsback_to_outline() {
         // GIVEN
-        let intent: DividerIntent = .basic
+        let intent: DividerIntent = .support
 
         // WHEN
         let dividerColors = self.useCase.execute(
@@ -231,27 +231,6 @@ final class DividerGetColorsUseCaseTests: XCTestCase {
     func test_execute_deprecated_main_fallsback_to_outline() {
         // GIVEN
         let intent: DividerIntent = .main
-
-        // WHEN
-        let dividerColors = self.useCase.execute(
-            theme: self.theme,
-            intent: intent
-        )
-
-        // THEN
-        XCTAssertTrue(
-            dividerColors.text.equals(theme.colors.base.onSurface),
-            "Text color should be onSurface for deprecated intent"
-        )
-        XCTAssertTrue(
-            dividerColors.separator.equals(theme.colors.base.outline),
-            "Separator color should fallback to outline for deprecated intent"
-        )
-    }
-
-    func test_execute_deprecated_support_fallsback_to_outline() {
-        // GIVEN
-        let intent: DividerIntent = .support
 
         // WHEN
         let dividerColors = self.useCase.execute(
