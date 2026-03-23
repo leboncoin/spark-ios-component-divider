@@ -15,8 +15,6 @@ public enum DividerIntent: CaseIterable {
     @available(*, deprecated, message: "Use outline or outlineHigh instead")
     case accent
     @available(*, deprecated, message: "Use outline or outlineHigh instead")
-    case basic
-    @available(*, deprecated, message: "Use outline or outlineHigh instead")
     case success
     @available(*, deprecated, message: "Use outline or outlineHigh instead")
     case alert

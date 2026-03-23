@@ -56,19 +56,6 @@ final class DividerGetColorsUseCaseDeprecatedTests: XCTestCase {
         XCTAssertTrue(dividerColors.separator.equals(colors.accent.onAccentContainer), "Wrong separator color")
     }
 
-    func test_execute_basic() {
-        // GIVEN
-        let useCase = DividerGetColorsUseCaseDeprecated()
-        let colors = ColorsGeneratedMock.mocked()
-
-        // WHEN
-        let dividerColors = useCase.execute(colors: colors, intent: .basic)
-
-        // THEN
-        XCTAssertTrue(dividerColors.text.equals(colors.basic.onBasicContainer), "Wrong text color")
-        XCTAssertTrue(dividerColors.separator.equals(colors.basic.onBasicContainer), "Wrong separator color")
-    }
-
     func test_execute_success() {
         // GIVEN
         let useCase = DividerGetColorsUseCaseDeprecated()

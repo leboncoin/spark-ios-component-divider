@@ -24,7 +24,6 @@ struct DividerGetColorsUseCaseDeprecated: DividierGetColorsUseCasableDeprecated 
         case .outline: colors.base.outline
         case .outlineHigh: colors.base.outlineHigh
         case .accent: colors.accent.onAccentContainer
-        case .basic: colors.basic.onBasicContainer
         case .success: colors.feedback.onSuccessContainer
         case .alert: colors.feedback.onAlertContainer
         case .error: colors.feedback.onErrorContainer
